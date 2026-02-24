@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salil Sane | Strategic Investment Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;   
+            --secondary: #ec4899; 
+            --accent: #14b8a6;    
+            --dark: #0f172a;      
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--dark);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .glass-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .h-chart-lg { height: 320px; }
+        .h-chart-md { height: 220px; }
+        .h-chart-sm { height: 180px; }
+
+        .indicator-dot {
+            width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+        }
+        
+        .node-circle {
+            width: 48px; height: 48px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.25rem; color: white;
+            position: relative; z-index: 10;
+        }
+        .node-line {
+            height: 2px; background: #cbd5e1; flex-grow: 1; margin: 0 12px;
+        }
+        .vertical-line {
+            width: 2px; background: #cbd5e1; height: 24px; margin: 0 auto;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(241, 245, 249, 0.8);
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 0.875rem;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center shadow-xl">
+                    <span class="text-white font-black text-3xl">S</span>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black tracking-tight text-slate-800">Salil Sane</h1>
+                    <p class="text-xs font-bold text-indigo-500 uppercase tracking-[0.2em]">Research : Index Funds vs Silver ETFs</p>
+                </div>
+            </div>
+            
+            <div class="glass-panel px-6 py-2 flex items-center gap-6">
+                <div class="text-right">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase">Market Outlook</div>
+                    <div class="text-sm font-bold text-teal-600">Growth Phase</div>
+                </div>
+                <div class="w-px h-8 bg-slate-300"></div>
+                <div class="text-right">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase">Strategy</div>
+                    <div class="text-sm font-bold text-indigo-600">Core + Satellite</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Bento Grid Layout -->
+        <div class="bento-grid">
+
+            <!-- 1. The Core Philosophy -->
+            <div class="col-span-12 lg:col-span-4 glass-panel glass-dark p-8 flex flex-col justify-between relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-bold uppercase tracking-wider mb-4 border border-indigo-500/30">
+                        Research Note
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4 leading-tight">The Wealth <br><span class="text-indigo-400">Framework</span></h2>
+                    <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                        "Investing isn't about complexity; it's about consistency. My data suggests that while Silver offers industrial protection, Index funds remain the most efficient way to participate in India's growth."
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 relative z-10 mt-4">
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <div class="text-2xl font-black text-white">90%</div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold">Equity Core</div>
+                    </div>
+                    <div class="bg-white/5 rounded-xl p-4 border border-white/10">
+                        <div class="text-2xl font-black text-pink-400">10%</div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold">Silver Hedge</div>
+                    </div>
+                </div>
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-indigo-600 rounded-full blur-[80px] opacity-40 pointer-events-none"></div>
+            </div>
+
+            <!-- 2. Allocation Strategy -->
+            <div class="col-span-12 md:col-span-6 lg:col-span-4 glass-panel p-6 flex flex-col">
+                <h3 class="font-bold text-slate-700 mb-2">Portfolio Split</h3>
+                <p class="text-xs text-slate-500 mb-4">Strategic allocation for the year 2026.</p>
+                
+                <div class="chart-wrapper h-chart-md flex-grow">
+                    <canvas id="allocationChart"></canvas>
+                </div>
+                
+                <div class="flex justify-center gap-6 mt-2">
+                    <div class="flex items-center gap-2">
+                        <span class="indicator-dot bg-indigo-500"></span>
+                        <span class="text-xs font-bold text-slate-600">Index</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="indicator-dot bg-pink-500"></span>
+                        <span class="text-xs font-bold text-slate-600">Silver</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Tax Comparison -->
+            <div class="col-span-12 md:col-span-6 lg:col-span-4 glass-panel p-6">
+                <h3 class="font-bold text-slate-700 mb-4">Post-Tax Efficiency</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-400 uppercase mb-1">
+                            <span>Index Fund (Equity)</span>
+                            <span class="text-teal-600">12.5% Tax</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div class="bg-teal-500 h-full w-[12.5%]"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold text-slate-400 uppercase mb-1">
+                            <span>Silver ETF (Debt status)</span>
+                            <span class="text-pink-600">Slab Rate</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div class="bg-pink-500 h-full w-[30%]"></div>
+                        </div>
+                    </div>
+                    <div class="mt-6 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                        <p class="text-xs text-indigo-700 leading-relaxed font-medium">
+                            <strong>My View:</strong> Index funds are nearly 2.5x more tax-efficient for long-term holders compared to Silver ETFs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Growth Projection -->
+            <div class="col-span-12 lg:col-span-8 glass-panel p-6">
+                <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-2">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">Growth Simulation</h3>
+                        <p class="text-sm text-slate-500">Wealth accumulation on a ₹10,000 monthly SIP.</p>
+                    </div>
+                </div>
+                <div class="chart-wrapper h-chart-lg">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 5. Volatility Analysis -->
+            <div class="col-span-12 lg:col-span-4 glass-panel p-6 flex flex-col">
+                <h3 class="font-bold text-slate-700 mb-1">Risk Variance</h3>
+                <p class="text-xs text-slate-500 mb-4">Yearly fluctuation metrics.</p>
+                <div class="chart-wrapper h-chart-sm flex-grow">
+                    <canvas id="volatilityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 6. Decision Logic -->
+            <div class="col-span-12 glass-panel p-8">
+                <div class="text-center mb-10">
+                    <h3 class="text-xl font-bold text-slate-800">Salil's Decision Logic</h3>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4">
+                    <div class="flex flex-col items-center text-center w-full md:w-1/4">
+                        <div class="node-circle bg-slate-800 shadow-xl shadow-slate-200">1</div>
+                        <div class="mt-4 font-bold text-slate-700 text-sm">Define Tenure</div>
+                        <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">5+ Years Required</p>
+                    </div>
+                    <div class="hidden md:block node-line"></div>
+                    <div class="flex flex-col items-center text-center w-full md:w-1/4">
+                        <div class="node-circle bg-indigo-500 shadow-xl shadow-indigo-200">2</div>
+                        <div class="mt-4 font-bold text-indigo-700 text-sm">Anchor SIP</div>
+                        <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">UTI / HDFC Nifty 50</p>
+                    </div>
+                    <div class="hidden md:block node-line"></div>
+                    <div class="flex flex-col items-center text-center w-full md:w-1/4">
+                        <div class="node-circle bg-pink-500 shadow-xl shadow-pink-200">3</div>
+                        <div class="mt-4 font-bold text-pink-700 text-sm">Tactical Hedge</div>
+                        <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">Silver (Max 10%)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Recommendations Tables -->
+            <!-- Index Recommendations -->
+            <div class="col-span-12 lg:col-span-6 glass-panel p-6 overflow-hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-2 h-8 bg-indigo-500 rounded-full"></div>
+                    <div>
+                        <h3 class="font-bold text-slate-800">Top Index Recommendations</h3>
+                        <p class="text-xs text-slate-500">Based on Tracking Error & Expense Ratio</p>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scheme Name</th>
+                                <th>Exp. Ratio</th>
+                                <th>Tracking Error</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold text-slate-700">UTI Nifty 50 Index</td>
+                                <td class="text-indigo-600 font-bold">0.18%</td>
+                                <td class="text-slate-500">0.03% (Very Low)</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-700">HDFC Index Nifty 50</td>
+                                <td class="text-indigo-600 font-bold">0.20%</td>
+                                <td class="text-slate-500">0.04% (Low)</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-700">Navi Nifty 50 Index</td>
+                                <td class="text-indigo-600 font-bold">0.06%</td>
+                                <td class="text-slate-500">0.12% (Moderate)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Silver ETF Recommendations -->
+            <div class="col-span-12 lg:col-span-6 glass-panel p-6 overflow-hidden">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-2 h-8 bg-pink-500 rounded-full"></div>
+                    <div>
+                        <h3 class="font-bold text-slate-800">Top Silver ETF Picks</h3>
+                        <p class="text-xs text-slate-500">Based on Liquidity & AUM Strength</p>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scheme Name</th>
+                                <th>AUM Size</th>
+                                <th>Daily Vol.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="font-bold text-slate-700">Nippon India Silver ETF</td>
+                                <td class="text-pink-600 font-bold">₹1,200 Cr+</td>
+                                <td class="text-slate-500">High (Best Liquidity)</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-700">ICICI Pru Silver ETF</td>
+                                <td class="text-pink-600 font-bold">₹1,000 Cr+</td>
+                                <td class="text-slate-500">High (Stable)</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold text-slate-700">HDFC Silver ETF</td>
+                                <td class="text-pink-600 font-bold">₹850 Cr+</td>
+                                <td class="text-slate-500">Medium (Reliable)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-12 text-center border-t border-slate-200 pt-8 pb-4">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Disclaimer</p>
+            <p class="text-[10px] text-slate-400 max-w-lg mx-auto leading-relaxed">
+                Research is based on prevailing market conditions as of Feb 2026. Mutual fund investments are subject to market risks. Please read all scheme-related documents carefully.
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Utilities
+        const wrapLabel = (str, max = 15) => {
+            if (str.length <= max) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length < max) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        };
+
+        const commonPlugins = {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#0f172a',
+                titleColor: '#fff',
+                bodyColor: '#cbd5e1',
+                padding: 12,
+                cornerRadius: 12,
+                callbacks: {
+                    title: (items) => {
+                        const label = items[0].chart.data.labels[items[0].dataIndex];
+                        return Array.isArray(label) ? label.join(' ') : label;
+                    }
+                }
+            }
+        };
+
+        // Charts
+        new Chart(document.getElementById('allocationChart'), {
+            type: 'doughnut',
+            data: {
+                labels: [wrapLabel('Index Core Growth'), wrapLabel('Silver Hedge')],
+                datasets: [{
+                    data: [90, 10],
+                    backgroundColor: ['#6366f1', '#ec4899'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '80%',
+                plugins: commonPlugins
+            }
+        });
+
+        new Chart(document.getElementById('growthChart'), {
+            type: 'line',
+            data: {
+                labels: ['Start', 'Yr 2', 'Yr 4', 'Yr 6', 'Yr 8', 'Yr 10'],
+                datasets: [
+                    {
+                        label: 'Index Fund',
+                        data: [0, 2.8, 6.5, 11.5, 17.8, 24.2],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#6366f1'
+                    },
+                    {
+                        label: 'Silver ETF',
+                        data: [0, 2.2, 5.0, 8.8, 13.2, 19.1],
+                        borderColor: '#ec4899',
+                        borderDash: [6, 6],
+                        fill: false,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: commonPlugins,
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        grid: { color: 'rgba(0,0,0,0.02)' }, 
+                        ticks: { callback: v => '₹' + v + 'L' } 
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('volatilityChart'), {
+            type: 'bar',
+            data: {
+                labels: [wrapLabel('Risk Metric'), wrapLabel('Drawdown')],
+                datasets: [
+                    {
+                        label: 'Index',
+                        data: [14, -22],
+                        backgroundColor: '#6366f1',
+                        borderRadius: 10
+                    },
+                    {
+                        label: 'Silver',
+                        data: [24, -38],
+                        backgroundColor: '#ec4899',
+                        borderRadius: 10
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: commonPlugins,
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { ticks: { callback: v => v + '%' } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
